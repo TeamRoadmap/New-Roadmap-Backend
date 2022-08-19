@@ -1,4 +1,4 @@
-const {DB, DB_PASSWORD, DB_HOST, DB_PORT, DB_USER } = process.env;
+const { DB, DB_PASSWORD, DB_HOST, DB_PORT, DB_USER } = process.env;
 
 const config = {
   database: DB,
@@ -12,6 +12,12 @@ const config = {
       require: true,
       rejectUnauthorized: false,
     },
+  },
+  pool: {
+    max: 30,
+    min: 1,
+    idle: 30000,
+    acquire: 10000,
   },
 };
 
