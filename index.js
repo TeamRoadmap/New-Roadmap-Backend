@@ -1,26 +1,16 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import express from 'express';
-import cors from 'cors';
-import morgan from "morgan";
-import { connectDB } from './middlewares/db.js';
+const app = require("./app");
+const models = require("./database/models");
 
-const PORT = process.env.PORT || 5000;
+const { PORT } = process.env;
 
-const whitelist = process.env.WHITELISTED_DOMAINS
- ? process.env.WHITELISTED_DOMAINS.split(',')
- : [];
-
-const app = express();
-app.use(morgan('dev'));
-app.use(cors({ origin: whitelist }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-connectDB();
-
-app.get('/', (_, res) => {
-    res.send('hello from roadmap backend');
-});
-
-app.listen(PORT, () => console.log(`Server at port ${PORT}`));
+models.sequelize
+  .sync({
+    alter: false,
+    drop: false,
+  })
+  .then(() => {
+    app.listen(PORT, function () {
+      console.log("Express server listening on port " + PORT);
+    });
+  })
+  .catch((err) => console.log(err));
