@@ -149,4 +149,79 @@ funcs.fetchEnrollments = async (req, res) => {
   }
 }
 
+funcs.voteCourse = async (req, res) => {
+  const { id = '' } = req.params;
+  const { vote = false } = req.body;
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "User not found" });
+    }
+
+    const course = await courseServices.getCourse({ course_id: id });
+
+    const voteObj = await courseServices.voteCourse({ course_id: course.id, user_id: user.id, vote });
+
+    return res.status(200).json({
+      success: true,
+      message: "Voted course successfully.",
+      data: voteObj,
+    });
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json({ success: false, message: "Voting unsuccessful" }); 
+  }
+}
+
+funcs.fetchVotes = async (req, res) => {
+  const { id = '' } = req.params;
+  try {
+
+    const course = await courseServices.getCourse({ course_id: id });
+
+    const votes = await courseServices.fetchVotes({ course_id: course.id });
+
+    return res.status(200).json({
+      success: true,
+      message: "Vote fetching successfully.",
+      data: votes,
+    });
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json({ success: false, message: "Vote fetching unsuccessful" }); 
+  }
+}
+
+funcs.updateVote = async (req, res) => {
+  const { id = '' } = req.params;
+  const { vote = false } = req.body;
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "User not found" });
+    }
+
+    const course = await courseServices.getCourse({ course_id: id });
+
+    const voteObj = await courseServices.updateVote({ course_id: course.id, user_id: user.id, vote });
+
+    return res.status(200).json({
+      success: true,
+      message: "Vote update successfully.",
+      data: voteObj,
+    });
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json({ success: false, message: "Vote update unsuccessful" }); 
+  }
+}
+
 module.exports = funcs;

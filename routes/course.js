@@ -17,6 +17,11 @@ router.get('/:id/enrollment', courseController.fetchEnrollments);
 
 router.post('/:id/enrollment', isAuthorized, courseController.enrollInCourse);
 
+router.get("/:id/vote", courseController.fetchVotes);
+
+router.post('/:id/vote', isAuthorized, courseController.voteCourse);
+
+router.patch('/:id/vote', isAuthorized, courseController.updateVote);
 
 
 module.exports = router;

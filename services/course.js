@@ -143,6 +143,10 @@ funcs.enrollInCourse = async ({
             user_id
         }
        }, transaction);
+   
+       if (transaction) {
+        await transaction.commit();
+    }
 
        return { enrollment };
     } catch (error) {
@@ -163,6 +167,76 @@ funcs.fetchEnrollments = async ({
         return { enrollments };
     } catch (error) {
         throw error;
+    }
+}
+
+funcs.voteCourse = async ({
+    course_id,
+    user_id, 
+    vote 
+}) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const voteC = await courseManager.createVote({ 
+            model: { 
+                course_id, 
+                user_id, 
+                vote 
+            }
+        }, transaction);
+
+        if (transaction) {
+            await transaction.commit();
+        }
+    
+        return { voteC };
+    } catch (error) {
+        if (transaction) {
+            await transaction.rollback();
+        }
+        throw error;
+    }
+
+}
+
+funcs.fetchVotes = async ({
+    course_id
+}) => {
+    try {
+       const totalVotes = await courseManager.countVotes({
+        query: { course_id }
+       });
+       const upvotes = await courseManager.countVotes({
+        query: { course_id, vote : true }
+       });
+
+        return { upvotes, downvotes: (totalVotes - upvotes) };
+    } catch (error) {
+        throw error;
+    }
+}
+
+funcs.updateVote = async ({
+    course_id,
+    user_id, 
+    vote 
+}) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const voteObj = await courseManager.updateVote({
+            model: { course_id, user_id, vote },
+            query: { user_id, course_id }
+        }, transaction);
+
+        if (transaction) {
+            await transaction.commit();
+        }
+        return { vote: voteObj[1][0] }; // send updated vote
+    } catch (error) {
+        if (transaction) {
+            await transaction.rollback();
+        }
+        throw error;  
     }
 }
 

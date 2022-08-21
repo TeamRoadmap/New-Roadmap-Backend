@@ -1,4 +1,7 @@
-const { courses, user_enrolled_courses, users } = require('../models');
+const { courses, user_enrolled_courses, users, course_votes } = require('../models');
+
+user_enrolled_courses.belongsTo(courses, { foreignKey: 'course_id', targetKey: 'id' } )
+user_enrolled_courses.belongsTo(users, { foreignKey: 'user_id', targetKey: 'id' } )
 
 let funcs = {};
 
@@ -43,17 +46,34 @@ funcs.createEnrollment = ({ model }, transaction) => {
     return  user_enrolled_courses.create(model, { transaction });
 };
 
-// TODO associations
-// funcs.getEnrollments = ({ query }) => {
-//     return user_enrolled_courses.findAll({
-//         where: query,
-//         include: [
-//             {
-//                 model: users,
-//                 attributes: ['name', 'picture']
-//             }
-//         ]
-//     })
-// }
+funcs.getEnrollments = ({ query }) => {
+    return user_enrolled_courses.findAll({
+        where: query,
+        attributes: [],
+        include: [
+            {
+                model: users,
+                attributes: ['name', 'picture']
+            }
+        ]
+    })
+}
+
+funcs.createVote = ({ model }, transaction) => {
+    return course_votes.create(model, { transaction });
+}
+
+funcs.countVotes = ({ query }) => {
+    return course_votes.count({
+        where: query
+    });
+}
+
+funcs.updateVote = ({ model, query }, transaction) => {
+    return course_votes.update(model, {
+        where: query,
+        returning: true,
+    });
+}
 
 module.exports = funcs;
