@@ -101,12 +101,12 @@ funcs.updateSection = async ({ id, title, description, content, order }) => {
   }
 };
 
-funcs.deleteSection = async ({ id, creator_id }) => {
+funcs.deleteSection = async ({ id }) => {
   const transaction = await sequelize.transaction();
   try {
     const course = await sectionManager.deleteSection(
       {
-        query: { public_id: id, creator_id },
+        query: { public_id: id },
       },
       transaction
     );
