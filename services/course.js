@@ -70,7 +70,7 @@ funcs.fetchCourses = async ({ creatorId, course_id, type }) => {
         if (creatorId) {
             const courses = await courseManager.getCourses({
                 query: { creator_id: creatorId },
-                attributes: ["public_id", "title", "description", "icon", "image"],
+                attributes: ["id", "public_id", "title", "description", "icon", "image"],
             });
             return { courses };
         }
@@ -78,14 +78,14 @@ funcs.fetchCourses = async ({ creatorId, course_id, type }) => {
         if (type) {
             const courses = await courseManager.getCourses({
                 query: { types: { [Op.contains]: [type] } },
-                attributes: ["public_id", "title", "description", "icon", "image"],
+                attributes: ["id", "public_id", "title", "description", "icon", "image"],
             });
             return { courses };
         }
 
         const courses = await courseManager.getCourses({
             query: {},
-            attributes: ["public_id", "title", "description", "icon", "image"],
+            attributes: ["id", "public_id", "title", "description", "icon", "image"],
         });
 
         return { courses };
