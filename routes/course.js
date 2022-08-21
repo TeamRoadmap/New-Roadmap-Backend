@@ -9,6 +9,8 @@ router.get('/', isAuthorized, courseController.fetchAllCourses);
 
 router.post('/', isAuthorized, courseController.createCourse);
 
+router.get('/:id', isAuthorized, courseController.fetchCourse);
+
 router.patch('/:id', isAuthorized, courseController.updateCourse);
 
 router.delete('/:id', isAuthorized, courseController.deleteCourse);

@@ -62,17 +62,17 @@ funcs.fetchSubection = async ({ id }) => {
   }
 };
 
-funcs.fetchSubectionTitles = async ({ course_id }) => {
+funcs.fetchSubectionTitles = async ({ section_id }) => {
   try {
-    if (course_id) {
-      const sections = await subsectionManager.getSubsections({
-        query: { course_id },
+    if (section_id) {
+      const subsections = await subsectionManager.getSubsections({
+        query: { section_id },
         attributes: ["id", "public_id", "title", "order"],
       });
-      return { sections };
+      return { subsections };
     }
 
-    return {};
+    return {subsections: []};
   } catch (error) {
     throw error;
   }
