@@ -72,7 +72,7 @@ funcs.fetchSectionTitles = async ({ course_id }) => {
       return { sections };
     }
 
-    return {};
+    return {sections: []};
   } catch (error) {
     throw error;
   }
