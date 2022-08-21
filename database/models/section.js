@@ -10,7 +10,7 @@ module.exports = function (sequelize, DataTypes) {
       },
       public_id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       title: {
         type: DataTypes.STRING(255),
@@ -23,6 +23,9 @@ module.exports = function (sequelize, DataTypes) {
       content: {
         type: DataTypes.TEXT,
         allowNull: true,
+      },
+      order: {
+        type: DataTypes.INTEGER
       },
       course_id: {
         type: DataTypes.INTEGER,
