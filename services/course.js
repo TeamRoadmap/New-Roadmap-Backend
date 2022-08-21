@@ -50,7 +50,7 @@ funcs.createCourse = async ({
     }
 };
 
-funcs.fetchCourses = async ({ id, course_id, type }) => {
+funcs.fetchCourses = async ({ creatorId, course_id, type }) => {
     try {
         if (course_id) {
             const course = await courseManager.getSingleCourse({
@@ -67,9 +67,9 @@ funcs.fetchCourses = async ({ id, course_id, type }) => {
             return { course };
         }
 
-        if (id) {
+        if (creatorId) {
             const courses = await courseManager.getCourses({
-                query: { creator_id: id },
+                query: { creator_id: creatorId },
                 attributes: ["public_id", "title", "description", "icon", "image"],
             });
             return { courses };

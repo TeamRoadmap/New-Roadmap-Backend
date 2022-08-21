@@ -36,10 +36,10 @@ funcs.createCourse = async (req, res) => {
 };
 
 funcs.fetchAllCourses = async (req, res) => {
-  const { type } = req.query;
+  const { creatorId, type } = req.query;
   
   try {
-    const courses = await courseServices.fetchCourses({type});
+    const courses = await courseServices.fetchCourses({creatorId, type});
     return res.status(200).json({
       success: true,
       message: "Courses fetched successfully.",
