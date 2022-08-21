@@ -2,30 +2,56 @@ const courseServices = require("../services/course");
 let funcs = {};
 
 funcs.createCourse = async (req, res) => {
-  const { title, description, icon, image } = req.body;
-    try {
-        const user = req.user;
+  const { title, description, types, icon, image } = req.body;
 
-        if (!user) {
-          return res.status(400).json({ success: false, message: "User not found" });
-        }
-        
-        const course = await courseServices.createCourse({
-           title, description, icon, image, creator_id: user.id
-        });
-        
-        return res.status(200).json({
-            success: true,
-            message: "Course created successfully.",
-            data: course,
-          });
-    } catch (error) {
-        console.log(error)
-        return res
-          .status(400)
-          .json({ success: false, message: "Course creation unsuccessful" });
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
     }
-}
+
+    const course = await courseServices.createCourse({
+      title,
+      description,
+      types,
+      icon,
+      image,
+      creator_id: user.id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Course created successfully.",
+      data: course,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ success: false, message: "Course creation unsuccessful" });
+  }
+};
+
+funcs.fetchAllCourses = async (req, res) => {
+  const { type } = req.query;
+  
+  try {
+    const courses = await courseServices.fetchCourses({type});
+    return res.status(200).json({
+      success: true,
+      message: "Courses fetched successfully.",
+      data: courses,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ success: false, message: "Fetching course unsuccessful" });
+  }
+};
 
 
 funcs.fetchCourses = async (req, res) => {

@@ -5,7 +5,7 @@ const { isAuthorized } = require('../middlewares/auth');
 const router = Router();
 
 
-router.get('/', isAuthorized, courseController.fetchCourses);
+router.get('/', isAuthorized, courseController.fetchAllCourses);
 
 router.post('/', isAuthorized, courseController.createCourse);
 

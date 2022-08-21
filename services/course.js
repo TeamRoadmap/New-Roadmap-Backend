@@ -1,36 +1,41 @@
 const courseManager = require('../database/managers/course');
 const authManager = require('../database/managers/auth');
 const sequelize = require('../database/models/index').sequelize;
-let funcs = {};
+const { Op } = require("sequelize");
 
+let funcs = {};
 
 funcs.createCourse = async ({
     title,
     description,
+    types,
     icon,
     image,
-    creator_id
+    creator_id,
 }) => {
-
     if (!(await authManager.findUser({ query: { id: creator_id } }))) {
         throw {
-          message: `User does not exists`,
-          status: 400,
+            message: `User does not exists`,
+            status: 400,
         };
-      }
+    }
 
     const transaction = await sequelize.transaction();
 
     try {
-        const course = await courseManager.createCourse({
-            model: {
-                title,
-                description,
-                icon,
-                image,
-                creator_id
+        const course = await courseManager.createCourse(
+            {
+                model: {
+                    title,
+                    description,
+                    types,
+                    icon,
+                    image,
+                    creator_id,
+                },
             },
-        }, transaction);
+            transaction
+        );
 
         if (transaction) {
             await transaction.commit();
@@ -41,36 +46,52 @@ funcs.createCourse = async ({
         if (transaction) {
             await transaction.rollback();
         }
-          throw error;
+        throw error;
     }
-
 };
 
-
-funcs.fetchCourses = async ({
-     id,
-     course_id
- }) => {
+funcs.fetchCourses = async ({ id, course_id, type }) => {
     try {
-
-        if(course_id){
+        if (course_id) {
             const course = await courseManager.getSingleCourse({
                 query: { public_id: course_id },
-                attributes: [ 'id' ,'public_id', 'title', 'description', 'icon', 'image'],
+                attributes: [
+                    "id",
+                    "public_id",
+                    "title",
+                    "description",
+                    "icon",
+                    "image",
+                ],
             });
             return { course };
         }
 
+        if (id) {
+            const courses = await courseManager.getCourses({
+                query: { creator_id: id },
+                attributes: ["public_id", "title", "description", "icon", "image"],
+            });
+            return { courses };
+        }
+
+        if (type) {
+            const courses = await courseManager.getCourses({
+                query: { types: { [Op.contains]: [type] } },
+                attributes: ["public_id", "title", "description", "icon", "image"],
+            });
+            return { courses };
+        }
+
         const courses = await courseManager.getCourses({
-            query: { creator_id: id },
-            attributes: ['public_id', 'title', 'description', 'icon', 'image'],
+            query: {},
+            attributes: ["public_id", "title", "description", "icon", "image"],
         });
 
         return { courses };
     } catch (error) {
-          throw error;
+        throw error;
     }
-
 };
 
 funcs.updateCourse = async ({ 
