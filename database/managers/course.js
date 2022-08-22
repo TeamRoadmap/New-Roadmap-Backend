@@ -1,6 +1,7 @@
 const {
   courses,
   user_enrolled_courses,
+  user_bookmarked_courses,
   users,
   course_votes,
 } = require("../models");
@@ -10,6 +11,15 @@ user_enrolled_courses.belongsTo(courses, {
   targetKey: "id",
 });
 user_enrolled_courses.belongsTo(users, {
+  foreignKey: "user_id",
+  targetKey: "id",
+});
+
+user_bookmarked_courses.belongsTo(courses, {
+  foreignKey: "course_id",
+  targetKey: "id",
+});
+user_bookmarked_courses.belongsTo(users, {
   foreignKey: "user_id",
   targetKey: "id",
 });
@@ -59,6 +69,23 @@ funcs.createEnrollment = ({ model }, transaction) => {
 
 funcs.getEnrollments = ({ query }) => {
   return user_enrolled_courses.findAll({
+    where: query,
+    attributes: [],
+    include: [
+      {
+        model: users,
+        attributes: ["name", "picture"],
+      },
+    ],
+  });
+};
+
+funcs.createBookmark = ({ model }, transaction) => {
+  return user_bookmarked_courses.create(model, { transaction });
+};
+
+funcs.getBookmarks = ({ query }) => {
+  return user_bookmarked_courses.findAll({
     where: query,
     attributes: [],
     include: [
