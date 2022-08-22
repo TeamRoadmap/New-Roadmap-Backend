@@ -10,7 +10,7 @@ module.exports = function (sequelize, DataTypes) {
       },
       public_id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       name: {
         type: DataTypes.STRING(255),
