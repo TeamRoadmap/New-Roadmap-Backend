@@ -21,7 +21,7 @@ funcs.signup = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "User created successfully.",
-      data: user,
+      data: user.user,
     });
   } catch (e) {
     console.log(e)
