@@ -19,6 +19,10 @@ router.get('/:id/enrollment', courseController.fetchEnrollments);
 
 router.post('/:id/enrollment', isAuthorized, courseController.enrollInCourse);
 
+router.get('/:id/bookmark', courseController.fetchBookmarks);
+
+router.post('/:id/bookmark', isAuthorized, courseController.bookmarkCourse);
+
 router.get("/:id/vote", courseController.fetchVotes);
 
 router.post('/:id/vote', isAuthorized, courseController.voteCourse);

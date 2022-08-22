@@ -25,7 +25,8 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: true,
       },
       order: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: true
       },
       course_id: {
         type: DataTypes.INTEGER,

@@ -242,6 +242,60 @@ funcs.fetchEnrollments = async (req, res) => {
   }
 };
 
+funcs.bookmarkCourse = async (req, res) => {
+  const { id = "" } = req.params;
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const course = await courseServices.getCourse({ course_id: id });
+    console.log(course);
+
+    const enrollment = await courseServices.bookmarkCourse({
+      course_id: course.id,
+      user_id: user.id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Course bookmarked successfully.",
+      data: enrollment,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ success: false, message: "Bookmarking course unsuccessful" });
+  }
+};
+
+funcs.fetchBookmarks = async (req, res) => {
+  const { id = "" } = req.params;
+  try {
+    const course = await courseServices.getCourse({ course_id: id });
+
+    const enrollments = await courseServices.fetchBookmarks({
+      course_id: course.id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Fetched bookmarks successfully.",
+      data: enrollments,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ success: false, message: "Fetching bookmark unsuccessful" });
+  }
+};
+
 funcs.voteCourse = async (req, res) => {
   const { id = "" } = req.params;
   const { vote = false } = req.body;

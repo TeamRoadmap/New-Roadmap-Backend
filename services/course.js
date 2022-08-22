@@ -191,6 +191,45 @@ funcs.fetchEnrollments = async ({
     }
 }
 
+funcs.bookmarkCourse = async ({
+    course_id,
+    user_id 
+}) => {
+    const transaction = await sequelize.transaction();
+    try {
+       const bookmark = await courseManager.createBookmark({
+        model: {
+            course_id,
+            user_id
+        }
+       }, transaction);
+   
+       if (transaction) {
+        await transaction.commit();
+    }
+
+       return { bookmark };
+    } catch (error) {
+        if (transaction) {
+            await transaction.rollback();
+        }
+          throw error;
+    }
+}
+
+funcs.fetchBookmarks = async ({
+    course_id
+}) => {
+    try {
+        const bookmarks = await courseManager.getBookmarks({
+            query: { course_id }
+        });
+        return { bookmarks };
+    } catch (error) {
+        throw error;
+    }
+}
+
 funcs.voteCourse = async ({
     course_id,
     user_id, 
