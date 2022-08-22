@@ -5,15 +5,6 @@ const {
   users,
 } = require("../models");
 
-user_bookmarked_courses.belongsTo(courses, {
-  foreignKey: "course_id",
-  targetKey: "id",
-});
-user_bookmarked_courses.belongsTo(users, {
-  foreignKey: "user_id",
-  targetKey: "id",
-});
-
 let funcs = {};
 
 funcs.getUser = ({ query }) => {
@@ -33,6 +24,32 @@ funcs.updateUser = ({ model, query }) => {
   return users.update(model, {
     where: query,
     returning: true,
+  });
+};
+
+funcs.getEnrollments = ({ query }) => {
+  return user_enrolled_courses.findAll({
+    where: query,
+    attributes: [],
+    include: [
+      {
+        model: courses,
+        attributes: ["id", "public_id", "title", "description"],
+      },
+    ],
+  });
+};
+
+funcs.getBookmarks = ({ query }) => {
+  return user_bookmarked_courses.findAll({
+    where: query,
+    attributes: [],
+    include: [
+      {
+        model: courses,
+        attributes: ["id", "public_id", "title", "description"],
+      },
+    ],
   });
 };
 
